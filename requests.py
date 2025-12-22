@@ -1,4 +1,4 @@
 import requests
 
 class Requests:
-    pass
+    url = "https://api.clashroyale.com/v1/clans/Rao Gathering"

@@ -8,6 +8,6 @@ class Requests:
         self.headers = {"Authorization": f"Bearer {os.getenv('TOKEN')}"}
     
     def get_war_data(self):
-        url = "https://api.clashroyale.com/v1/clans/Rao Gathering"
+        url = "https://api.clashroyale.com/v1/clans/Rao Gathering/warlog"
         clan_data = requests.get(url, headers=self.headers).json()
         return clan_data

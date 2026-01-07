@@ -3,14 +3,15 @@
 Main entry point for the Clan Management application.
 """
 
-from requests import Requests
+from api_requests import Requests
 
 def main():
     """Main function."""
-
-    war_data = Requests.get_war_data()
-
-    print("Welcome to Clan Management!")
+    requests = Requests()
+    print("requests initialized")
+    war_data = requests.get_war_data()
+    print("war data fetched")
+    print(war_data)
 
 
 if __name__ == "__main__":

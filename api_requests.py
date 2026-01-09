@@ -6,8 +6,16 @@ class Requests:
     def __init__(self):
         load_dotenv()
         self.headers = {"Authorization": f"Bearer {os.getenv('TOKEN')}"}
-    
+
+    def load_clan_data(self):
+        url = "https://api.clashroyale.com/v1/clans/?name=Rao%20Gathering"
+        clan_data = requests.get(url, headers=self.headers)
+        if clan_data.status_code != 200:
+            raise Exception(f"Clan data request failed with status code {clan_data.status_code}")
+        self.clan_tag = clan_data.json()['items'][0]['tag']
+        return
+
     def get_war_data(self):
-        url = "https://api.clashroyale.com/v1/clans/Rao Gathering/warlog"
+        url = "https://api.clashroyale.com/v1/clans/Rao%20Gathering/riverracelog"
         clan_data = requests.get(url, headers=self.headers).json()
         return clan_data

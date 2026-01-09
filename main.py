@@ -9,9 +9,9 @@ def main():
     """Main function."""
     requests = Requests()
     print("requests initialized")
-    war_data = requests.get_war_data()
-    print("war data fetched")
-    print(war_data)
+    requests.load_clan_data()
+    print(requests.clan_tag)
+    print("clan data fetched")
 
 
 if __name__ == "__main__":

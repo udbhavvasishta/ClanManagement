@@ -4,15 +4,17 @@ Main entry point for the Clan Management application.
 """
 
 from api_requests import Requests
+from data_parser import DataParser
 
 def main():
     """Main function."""
     requests = Requests()
-    print("requests initialized")
+    print("Loading clan data...")
     requests.load_clan_data()
-    print(requests.clan_tag)
-    print("clan data fetched")
+    print("Fetching war data...")
+    war_data = requests.get_war_data()
 
+    parser = DataParser(war_data, requests.clan_tag)
 
 if __name__ == "__main__":
     main()

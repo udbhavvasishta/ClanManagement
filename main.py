@@ -15,6 +15,7 @@ def main():
     war_data = requests.get_war_data()
 
     parser = DataParser(war_data, requests.clan_tag)
+    print(parser.extract_clan_data())
 
 if __name__ == "__main__":
     main()

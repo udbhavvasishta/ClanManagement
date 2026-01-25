@@ -10,11 +10,11 @@ def main():
     """Main function."""
     requests = Requests()
     print("Loading clan data...")
-    requests.load_clan_data()
+    trophies = requests.load_clan_data()
     print("Fetching war data...")
     war_data = requests.get_war_data()
 
-    parser = DataParser(war_data, requests.clan_tag)
+    parser = DataParser(war_data, requests.clan_tag, trophies)
     print(parser.extract_clan_data())
 
 if __name__ == "__main__":

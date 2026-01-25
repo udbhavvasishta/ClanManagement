@@ -12,8 +12,9 @@ class Requests:
         clan_data = requests.get(url, headers=self.headers)
         if clan_data.status_code != 200:
             raise Exception(f"Clan data request failed with status code {clan_data.status_code}")
-        self.clan_tag = clan_data.json()['items'][0]['tag'].replace('#', '%23')
-        return
+        clan_data = clan_data.json()['items'][0]
+        self.clan_tag = clan_data['tag'].replace('#', '%23')
+        return clan_data['clanWarTrophies']
 
     def get_war_data(self):
         url = f"https://api.clashroyale.com/v1/clans/{self.clan_tag}/riverracelog?limit=1"

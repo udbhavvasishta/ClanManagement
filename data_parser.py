@@ -34,7 +34,7 @@ class DataParser:
         if month == 4 and day > 1 and day - 7 < 1:
             date_str += f", {date.today().year}"
 
-        if trophy_change[0] != '-':
+        if trophy_change > 0:
             trophy_change = '+' + trophy_change
 
         log = f"{date_str}\t{self.clan_trophies}\t{trophy_change}\t{os.getenv('LEADER')}"

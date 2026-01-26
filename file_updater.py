@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 class FileUpdater:
     def update_clan_war_data(self, data):
@@ -7,5 +8,6 @@ class FileUpdater:
             file.write(data)
 
     def update_leadership_data(self, data):
-        with open(self.leadership, 'w') as file:
+        leadership = os.getenv('LEADERSHIP')
+        with open(leadership, 'w') as file:
             file.write(data)

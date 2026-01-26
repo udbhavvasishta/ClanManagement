@@ -15,7 +15,8 @@ def main():
     war_data = requests.get_war_data()
 
     parser = DataParser(war_data, requests.clan_tag, trophies)
-    print(parser.extract_clan_data())
+    parser.parse_war_data()
+    #print(parser.extract_clan_data())
 
 if __name__ == "__main__":
     main()

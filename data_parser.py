@@ -1,7 +1,8 @@
 from datetime import date
 import os
 
-from file_updater import FileUpdater
+from file_writer import FileWriter
+from file_reader import FileReader
 
 class DataParser:
     def __init__(self, war_data, clan_tag, clan_trophies):
@@ -12,7 +13,8 @@ class DataParser:
     def parse_war_data(self):
         """Parse war data to extract relevant information."""
         trophy_change, participants = self.extract_clan_data()
-        self.log_trophy_change(trophy_change)
+        #self.log_trophy_change(trophy_change)
+        self.parse_participants(participants)
         
     def extract_clan_data(self):
         """Extract and format clan data for display."""
@@ -43,10 +45,11 @@ class DataParser:
             os.environ['PEAKTROPHIES'] = str(self.clan_trophies)
 
             log += '\t\t*'
-        else:
-            log += '\n'
         
-        FileUpdater().update_clan_war_data(log)
+        log += '\n'
+        
+        FileWriter().update_clan_war_data(log)
 
     def parse_participants(self, war_data):
-        print()
+        file = FileReader().read_clan_war_data()
+        updated_data = ""

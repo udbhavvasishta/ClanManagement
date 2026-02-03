@@ -1,7 +1,6 @@
 import os
-from pathlib import Path
 
-class FileUpdater:
+class FileWriter:
     def update_clan_war_data(self, data):
         clan_war = os.getenv('CLANWAR')
         with open(clan_war, 'a') as file:

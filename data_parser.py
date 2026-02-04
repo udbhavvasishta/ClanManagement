@@ -50,6 +50,12 @@ class DataParser:
         
         FileWriter().update_clan_war_data(log)
 
-    def parse_participants(self, war_data):
-        file = FileReader().read_clan_war_data()
-        updated_data = ""
+    def parse_participants(self, participants):
+        coleaders, elders = FileReader().read_clan_war_data()
+        self.process_coleaders(coleaders, participants)
+        
+    def process_coleaders(self, coleaders):
+        for coleader in coleaders:
+            line = coleader.split()
+
+            if line[-1] == '*':

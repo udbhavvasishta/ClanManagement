@@ -17,6 +17,11 @@ class FileReader:
                     elders = True
                 
                 if coleaders:
+                    coleaders_list.append(line)
+                elif elders:
+                    elders_list.append(line)
+        
+        return coleaders_list, elders_list
 
 
                 

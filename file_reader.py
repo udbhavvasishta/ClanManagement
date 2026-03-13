@@ -10,9 +10,11 @@ class FileReader:
         with open(clan_war, 'r') as file:
             while True:
                 line = file.readline().strip()
-                if line == 'Co-Leaders:':
+                if line == '\n':
+                    continue
+                if line == 'Co-Leaders:\n':
                     coleaders = True
-                if line == 'Elders:':
+                if line == 'Elders:\n':
                     coleaders = False
                     elders = True
                 

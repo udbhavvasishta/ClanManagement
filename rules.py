@@ -1,11 +1,7 @@
 from dataclasses import dataclass
 
 @dataclass
-class Rule:
-    id: int
-    name: str
-    description: str = ""
-    active: bool = True
-    priority: int = 0
+class Rules:
     war_minimum: int = 300
     max_inactivity: int = 7
+    coleader_candidate_eligibility: int = 3

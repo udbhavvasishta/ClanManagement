@@ -1,22 +1,54 @@
 #!/usr/bin/env python3
 """
-Main entry point for the Clan Management application.
+Clan Management — fetches war data from the Clash Royale API,
+logs trophy changes, and tracks leadership war commitment.
 """
 
-from api_requests import Requests
-from data_parser import DataParser
+import os
+from dotenv import load_dotenv
+
+from api_client import ClashApiClient
+from parser import extract_clan_standings, build_war_log_entry, check_war_commitment
+from file_io import read_leadership, append_war_log
+from models import Rules
+
+load_dotenv()
+
 
 def main():
-    """Main function."""
-    requests = Requests()
-    print("Loading clan data...")
-    trophies = requests.load_clan_data()
-    print("Fetching war data...")
-    war_data = requests.get_war_data()
+    rules = Rules()
 
-    parser = DataParser(war_data, requests.clan_tag, trophies)
-    parser.parse_war_data()
-    #print(parser.extract_clan_data())
+    # Fetch data from the API
+    client = ClashApiClient()
+    print("Loading clan data...")
+    trophies = client.get_clan_trophies()
+    print(f"Current war trophies: {trophies}")
+
+    print("Fetching latest war...")
+    war_data = client.get_latest_war()
+
+    # Parse war results
+    trophy_change, participants = extract_clan_standings(war_data, client.clan_tag)
+    print(f"Trophy change: {'+' if trophy_change > 0 else ''}{trophy_change}")
+
+    # Log the war result
+    peak_trophies = int(os.getenv("PEAKTROPHIES", "0"))
+    entry = build_war_log_entry(trophy_change, trophies, os.getenv("LEADER"), peak_trophies)
+    append_war_log(entry)
+    print(f"War log updated: {entry.date_str}")
+
+    if entry.is_peak:
+        print(f"New peak trophies: {trophies}")
+
+    # Check war commitment for co-leaders and elders
+    coleaders, elders = read_leadership()
+    all_names = coleaders + elders
+    commitment = check_war_commitment(participants, all_names, rules.war_minimum)
+
+    for name, fulfilled in commitment.items():
+        status = "met" if fulfilled else "DID NOT meet"
+        print(f"  {name}: {status} war minimum ({rules.war_minimum})")
+
 
 if __name__ == "__main__":
     main()

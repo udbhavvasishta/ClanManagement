@@ -4,7 +4,7 @@ Clan Management — fetches war data from the Clash Royale API,
 logs trophy changes, and tracks leadership war commitment.
 """
 
-import os
+import json
 from dotenv import load_dotenv
 
 from api_client import ClashApiClient
@@ -32,8 +32,10 @@ def main():
     print(f"Trophy change: {'+' if trophy_change > 0 else ''}{trophy_change}")
 
     # Log the war result
-    peak_trophies = int(os.getenv("PEAKTROPHIES", "0"))
-    entry = build_war_log_entry(trophy_change, trophies, os.getenv("LEADER"), peak_trophies)
+    with open("stats.json") as f:
+        stats = json.load(f)
+    peak_trophies = stats["PEAKTROPHIES"]
+    entry = build_war_log_entry(trophy_change, trophies, stats["LEADER"], peak_trophies)
     append_war_log(entry)
     print(f"War log updated: {entry.date_str}")
 

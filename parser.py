@@ -23,7 +23,7 @@ def build_war_log_entry(
     date_str = today.strftime("%B %d")
 
     # Add year marker at the start of each April (first week)
-    if today.month == 4 and today.day > 1 and today.day - 7 < 1:
+    if today.month == 4 and today.day <= 7:
         date_str += f", {today.year}"
 
     return ClanWarEntry(

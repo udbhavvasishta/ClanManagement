@@ -37,5 +37,11 @@ def build_war_log_entry(
 
 def check_war_commitment(participants: list[dict], names: list[str], war_minimum: int) -> dict[str, bool]:
     """Check which members met the war minimum score. Returns {name: fulfilled}."""
-    scores = {p["name"]: p.get("fame", 0) for p in participants}
-    return {name: scores.get(name, 0) >= war_minimum for name in names}
+    scores = {}
+    for p in participants:
+        scores[p["name"]] = p.get("fame", 0)
+
+    commitment = {}
+    for name in names:
+        commitment[name] = scores.get(name, 0) >= war_minimum
+    return commitment

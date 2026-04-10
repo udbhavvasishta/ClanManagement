@@ -41,6 +41,9 @@ def main():
 
     if entry.is_peak:
         print(f"New peak trophies: {trophies}")
+        stats["PEAKTROPHIES"] = trophies
+        with open("stats.json", "w") as f:
+            json.dump(stats, f, indent=4)
 
     # Check war commitment for co-leaders and elders
     coleaders, elders = read_leadership()

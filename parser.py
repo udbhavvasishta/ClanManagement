@@ -1,6 +1,6 @@
 from datetime import date
 
-from models import ClanWarEntry
+from models import ClanWarEntry, Coleader, Elder
 
 
 def extract_clan_standings(war_data: dict, clan_tag: str) -> tuple[int, list[dict]]:
@@ -35,13 +35,23 @@ def build_war_log_entry(
     )
 
 
-def check_war_commitment(participants: list[dict], names: list[str], war_minimum: int) -> dict[str, bool]:
-    """Check which members met the war minimum score. Returns {name: fulfilled}."""
+def process_coleaders(participants: list[dict], coleaders: list[str], war_minimum: int) -> list[Coleader]:
+    """Check war commitment for co-leaders specifically.
+    Returns list of Coleader objects for each coleader."""
     scores = {}
     for p in participants:
         scores[p["name"]] = p.get("fame", 0)
 
-    commitment = {}
-    for name in names:
-        commitment[name] = scores.get(name, 0) >= war_minimum
-    return commitment
+    results = []
+    for name in coleaders:
+        parts = name.split()
+        rank = int(parts[0])
+        member_name = parts[1]
+        fulfilled = scores.get(member_name, 0) >= war_minimum
+        results.append(Coleader(name=member_name, war_commitment_fulfilled=fulfilled, rank=rank))
+    return results
+
+
+def process_elders(participants: list[dict], elders: list[str], war_minimum: int) -> dict[str, bool]:
+    """Check war commitment for elders specifically."""
+    return check_war_commitment(participants, elders, war_minimum)

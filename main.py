@@ -8,7 +8,7 @@ import json
 from dotenv import load_dotenv
 
 from api_client import ClashApiClient
-from parser import extract_clan_standings, build_war_log_entry, check_war_commitment
+from parser import extract_clan_standings, build_war_log_entry, check_war_commitment, process_coleaders, process_elders
 from file_io import read_leadership, append_war_log
 from models import Rules
 
@@ -47,12 +47,9 @@ def main():
 
     # Check war commitment for co-leaders and elders
     coleaders, elders = read_leadership()
-    all_names = coleaders + elders
-    commitment = check_war_commitment(participants, all_names, rules.war_minimum)
 
-    for name, fulfilled in commitment.items():
-        status = "met" if fulfilled else "DID NOT meet"
-        print(f"  {name}: {status} war minimum ({rules.war_minimum})")
+    coleader_commitment = process_coleaders(participants, coleaders, rules.war_minimum)
+    elder_commitment = process_elders(participants, elders, rules.war_minimum)
 
 
 if __name__ == "__main__":

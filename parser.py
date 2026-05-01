@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 from models import ClanWarEntry, Coleader, Elder
 
@@ -38,20 +38,71 @@ def build_war_log_entry(
 def process_coleaders(participants: list[dict], coleaders: list[str], war_minimum: int) -> list[Coleader]:
     """Check war commitment for co-leaders specifically.
     Returns list of Coleader objects for each coleader."""
+    parsed = []
+    names = []
+    for entry in coleaders:
+        parts = entry.split()
+        rank = int(parts[0:-1])
+        member_name = parts[1]
+        already_fulfilled = parts[2].lower() == '*'
+        parsed.append((rank, member_name, already_fulfilled))
+        names.append(member_name)
+
+    commitment = check_war_commitment(participants, names, war_minimum)
+
+    results = []
+    for rank, member_name, already_fulfilled in parsed:
+        fulfilled = already_fulfilled or commitment.get(member_name, False)
+        results.append(
+            Coleader(
+                name=member_name,
+                war_commitment_fulfilled=fulfilled,
+                rank=rank,
+            )
+        )
+    return results
+
+
+def check_war_commitment(participants: list[dict], names: list[str], war_minimum: int) -> dict[str, bool]:
+    """Check which members met the war minimum score. Returns {name: fulfilled}."""
     scores = {}
     for p in participants:
         scores[p["name"]] = p.get("fame", 0)
 
-    results = []
-    for name in coleaders:
-        parts = name.split()
-        rank = int(parts[0])
+    commitment = {}
+    for name in names:
+        commitment[name] = scores.get(name, 0) >= war_minimum
+    return commitment
+
+
+def process_elders(participants: list[dict], elders: list[str], war_minimum: int) -> list[Elder]:
+    """Check war commitment for elders specifically.
+    Returns list of Elder objects for each elder."""
+    parsed = []
+    names = []
+    for entry in elders:
+        parts = entry.split()
+        rank = int(parts[0:-1])
         member_name = parts[1]
-        fulfilled = scores.get(member_name, 0) >= war_minimum
-        results.append(Coleader(name=member_name, war_commitment_fulfilled=fulfilled, rank=rank))
+        start_month = parts[2]
+        parsed.append((rank, member_name, start_month))
+        names.append(member_name)
+
+    commitment = check_war_commitment(participants, names, war_minimum)
+
+    results = []
+    for rank, member_name, start_month in parsed:
+        fulfilled = commitment.get(member_name, False)
+        results.append(
+            Elder(
+                name=member_name,
+                rank=rank,
+                title_held_since=datetime(
+                    datetime.today().year,
+                    datetime.strptime(start_month, "%B").month,
+                    1,
+                ),
+                candidate=fulfilled,
+            )
+        )
     return results
-
-
-def process_elders(participants: list[dict], elders: list[str], war_minimum: int) -> dict[str, bool]:
-    """Check war commitment for elders specifically."""
-    return check_war_commitment(participants, elders, war_minimum)
